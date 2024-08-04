@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+
+// ISP: Separăm interfața în două interfețe mai mici
+public interface IWorkable
+{
+    void Work();
+}
+
+public interface IEatable
+{
+    void Eat();
+}
+
+// LSP: Implementăm interfețele relevante pentru fiecare clasă
+public class HumanWorker : IWorkable, IEatable
+{
+    public void Work()
+    {
+        Console.WriteLine("Human working...");
+    }
+
+    public void Eat()
+    {
+        Console.WriteLine("Human eating...");
+    }
+}
+
+public class RobotWorker : IWorkable
+{
+    public void Work()
+    {
+        Console.WriteLine("Robot working...");
+    }
+}
+
+// DIP: Utilizăm injecția de dependențe pentru a depinde de abstracții
+public class WorkerManager
+{
+    private readonly IWorkable _worker;
+
+    public WorkerManager(IWorkable worker)
+    {
+        _worker = worker;
+    }
+
+    public void ManageWork()
+    {
+        _worker.Work();
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        IWorkable humanWorker = new HumanWorker();
+        IWorkable robotWorker = new RobotWorker();
+
+        WorkerManager humanManager = new WorkerManager(humanWorker);
+        WorkerManager robotManager = new WorkerManager(robotWorker);
+
+        humanManager.ManageWork();
+        robotManager.ManageWork();
+
+        // IEatable specific logic
+        if (humanWorker is IEatable eatableHumanWorker)
+        {
+            eatableHumanWorker.Eat();
+        }
+    }
+}
